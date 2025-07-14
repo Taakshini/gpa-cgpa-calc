@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dark CGPA Calculator</title>
+  <link rel="stylesheet" href="st.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎓 CGPA / GPA Calculator</h1>
+    <label class="theme-toggle">
+    <input type="checkbox" id="themeToggle" />
+    🌙 Dark Mode
+    </label>
+
+    <form id="gpaForm">
+      <div id="subjectsContainer"></div>
+      <button type="button" id="addSubject">➕ Add Subject</button>
+      <button type="submit">🎯 Calculate GPA</button>
+    </form>
+
+    <div class="result" id="gpaResult"></div>
+
+    <h2>📘 CGPA Calculator</h2>
+    <form id="cgpaForm">
+      <input type="number" id="totalGPA" placeholder="GPA × Credits" required />
+      <input type="number" id="totalCredits" placeholder="Total Credits" required />
+      <button type="submit">📊 Calculate CGPA</button>
+    </form>
+    <div class="result" id="cgpaResult"></div>
+
+    <h2>🎯 CGPA to Percentile</h2>
+    <input type="number" id="cgpaInput" placeholder="Enter CGPA" step="0.01" />
+    <button onclick="convertToPercentile()">Convert</button>
+    <div class="result" id="percentileResult"></div>
+  </div>
+
+  <script src="cal.js"></script>
+</body>
+</html>
