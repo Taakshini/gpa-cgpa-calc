@@ -2,39 +2,188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dark CGPA Calculator</title>
-  <link rel="stylesheet" href="st.css" />
+  <title>CSE GPA & CGPA Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    select, input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    .result {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>🎓 CGPA / GPA Calculator</h1>
-    <label class="theme-toggle">
-    <input type="checkbox" id="themeToggle" />
-    🌙 Dark Mode
-    </label>
+    <h1>🎓 CSE GPA & CGPA Calculator</h1>
 
-    <form id="gpaForm">
-      <div id="subjectsContainer"></div>
-      <button type="button" id="addSubject">➕ Add Subject</button>
-      <button type="submit">🎯 Calculate GPA</button>
-    </form>
+    <label for="semesterSelect">Select Semester:</label>
+    <select id="semesterSelect"></select>
 
+    <table id="subjectsTable">
+      <thead>
+        <tr>
+          <th>Subject Code</th>
+          <th>Subject Name</th>
+          <th>Credits</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button onclick="calculateGPA()">Calculate GPA</button>
     <div class="result" id="gpaResult"></div>
 
-    <h2>📘 CGPA Calculator</h2>
-    <form id="cgpaForm">
-      <input type="number" id="totalGPA" placeholder="GPA × Credits" required />
-      <input type="number" id="totalCredits" placeholder="Total Credits" required />
-      <button type="submit">📊 Calculate CGPA</button>
-    </form>
-    <div class="result" id="cgpaResult"></div>
+    <hr>
 
-    <h2>🎯 CGPA to Percentile</h2>
-    <input type="number" id="cgpaInput" placeholder="Enter CGPA" step="0.01" />
-    <button onclick="convertToPercentile()">Convert</button>
-    <div class="result" id="percentileResult"></div>
+    <h2>CGPA Calculator</h2>
+    <label>Total GPA × Credits:</label>
+    <input type="number" id="totalGPA" placeholder="GPA × Credits" />
+    <label>Total Credits:</label>
+    <input type="number" id="totalCredits" placeholder="Total Credits" />
+    <button onclick="calculateCGPA()">Calculate CGPA</button>
+    <div class="result" id="cgpaResult"></div>
   </div>
 
-  <script src="cal.js"></script>
+  <script>
+    let syllabusData = {};
+    const gradePoints = {
+      "O": 10,
+      "A+": 9,
+      "A": 8,
+      "B+": 7,
+      "B": 6,
+      "C": 5,
+      "U": 0
+    };
+
+    async function loadSyllabus() {
+      const res = await fetch("cse_syllabus.json");
+      syllabusData = await res.json();
+
+      const semesterSelect = document.getElementById("semesterSelect");
+      syllabusData.semesters.forEach(sem => {
+        const option = document.createElement("option");
+        option.value = sem.semester;
+        option.textContent = "Semester " + sem.semester;
+        semesterSelect.appendChild(option);
+      });
+
+      semesterSelect.addEventListener("change", () => {
+        loadSubjects(parseInt(semesterSelect.value));
+      });
+
+      // Load first semester by default
+      loadSubjects(syllabusData.semesters[0].semester);
+    }
+
+    function loadSubjects(semester) {
+      const semData = syllabusData.semesters.find(s => s.semester === semester);
+      const tbody = document.querySelector("#subjectsTable tbody");
+      tbody.innerHTML = "";
+
+      semData.subjects.forEach(sub => {
+        const row = document.createElement("tr");
+
+        const codeCell = document.createElement("td");
+        codeCell.textContent = sub.code;
+
+        const nameCell = document.createElement("td");
+        nameCell.textContent = sub.title;
+
+        const creditCell = document.createElement("td");
+        creditCell.textContent = sub.credits;
+
+        const gradeCell = document.createElement("td");
+        if (!sub.excludeFromCGPA) {
+          const select = document.createElement("select");
+          for (let grade in gradePoints) {
+            const option = document.createElement("option");
+            option.value = grade;
+            option.textContent = grade;
+            select.appendChild(option);
+          }
+          gradeCell.appendChild(select);
+        } else {
+          gradeCell.textContent = "Excluded";
+        }
+
+        row.appendChild(codeCell);
+        row.appendChild(nameCell);
+        row.appendChild(creditCell);
+        row.appendChild(gradeCell);
+        tbody.appendChild(row);
+      });
+    }
+
+    function calculateGPA() {
+      const semester = parseInt(document.getElementById("semesterSelect").value);
+      const semData = syllabusData.semesters.find(s => s.semester === semester);
+
+      let totalCredits = 0;
+      let weightedPoints = 0;
+
+      const rows = document.querySelectorAll("#subjectsTable tbody tr");
+      rows.forEach((row, i) => {
+        const sub = semData.subjects[i];
+        if (!sub.excludeFromCGPA) {
+          const grade = row.querySelector("select").value;
+          const points = gradePoints[grade];
+          weightedPoints += points * sub.credits;
+          totalCredits += sub.credits;
+        }
+      });
+
+      const gpa = (weightedPoints / totalCredits).toFixed(2);
+      document.getElementById("gpaResult").textContent = "GPA: " + gpa;
+    }
+
+    function calculateCGPA() {
+      const totalGPA = parseFloat(document.getElementById("totalGPA").value);
+      const totalCredits = parseFloat(document.getElementById("totalCredits").value);
+
+      if (totalCredits > 0) {
+        const cgpa = (totalGPA / totalCredits).toFixed(2);
+        document.getElementById("cgpaResult").textContent = "CGPA: " + cgpa;
+      } else {
+        document.getElementById("cgpaResult").textContent = "Invalid total credits.";
+      }
+    }
+
+    loadSyllabus();
+  </script>
 </body>
 </html>

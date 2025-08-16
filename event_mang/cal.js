@@ -1,144 +1,76 @@
-// Auto add 3 subjects on load
-window.onload = () => {
-  for (let i = 0; i < 3; i++) addSubjectRow();
+// Grade points mapping as per Anna University
+const gradePoints = {
+  "O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "U": 0
 };
-// Theme Switcher
-const toggle = document.getElementById("themeToggle");
-toggle.addEventListener("change", () => {
-  const theme = toggle.checked ? "dark" : "light";
-  document.body.className = theme;
-  localStorage.setItem("theme", theme);
-});
-function addSubjectRow(data = {}) {
-  const row = document.createElement("div");
-  row.className = "subjectRow";
-  row.innerHTML = `
-    <input type="text" placeholder="Subject" value="${data.name || ''}" />
-    <input type="number" placeholder="Credits" min="1" value="${data.credits || ''}" required />
-    <select required>
-      <option value="">Grade</option>
-      <option value="10" ${data.grade == 10 ? 'selected' : ''}>O</option>
-      <option value="9" ${data.grade == 9 ? 'selected' : ''}>A+</option>
-      <option value="8" ${data.grade == 8 ? 'selected' : ''}>A</option>
-      <option value="7" ${data.grade == 7 ? 'selected' : ''}>B+</option>
-      <option value="6" ${data.grade == 6 ? 'selected' : ''}>B</option>
-      <option value="0" ${data.grade == 0 ? 'selected' : ''}>RA (Fail)</option>
-    </select>
-    <button type="button" class="removeBtn">❌</button>
-  `;
-  document.getElementById("subjectsContainer").appendChild(row);
-  saveSubjectsToLocalStorage();
-}
-// Save subjects
-function saveSubjectsToLocalStorage() {
-  const rows = document.querySelectorAll(".subjectRow");
-  const subjects = [];
 
-  rows.forEach(row => {
-    subjects.push({
-      name: row.children[0].value,
-      credits: row.children[1].value,
-      grade: row.children[2].value
+// Load JSON and populate semester dropdown
+fetch("cse_syllabus.json")
+  .then(res => res.json())
+  .then(data => {
+    const semesterSelect = document.getElementById("semesterSelect");
+    data.semesters.forEach(sem => {
+      let opt = document.createElement("option");
+      opt.value = sem.semester;
+      opt.textContent = "Semester " + sem.semester;
+      semesterSelect.appendChild(opt);
     });
+
+    // Load subjects when semester changes
+    semesterSelect.addEventListener("change", () => {
+      const selected = parseInt(semesterSelect.value);
+      const semester = data.semesters.find(s => s.semester === selected);
+      const tbody = document.querySelector("#subjectsTable tbody");
+      tbody.innerHTML = "";
+      semester.subjects.forEach(sub => {
+        let row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${sub.code}</td>
+          <td>${sub.title}</td>
+          <td>${sub.credits}</td>
+          <td>
+            <select data-credits="${sub.credits}" data-exclude="${sub.excludeFromCGPA}">
+              <option value="">Select</option>
+              ${Object.keys(gradePoints).map(grade => `<option value="${grade}">${grade}</option>`).join("")}
+            </select>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    });
+
+    // Trigger first load
+    semesterSelect.value = data.semesters[0].semester;
+    semesterSelect.dispatchEvent(new Event("change"));
   });
 
-  localStorage.setItem("subjects", JSON.stringify(subjects));
-}
+// Calculate GPA
+document.getElementById("calcGPA").addEventListener("click", () => {
+  let totalPoints = 0;
+  let totalCredits = 0;
 
-// Call after change
-document.addEventListener("input", e => {
-  if (e.target.closest(".subjectRow")) {
-    saveSubjectsToLocalStorage();
-  }
-});
+  document.querySelectorAll("#subjectsTable select").forEach(sel => {
+    let grade = sel.value;
+    let credits = parseFloat(sel.dataset.credits);
+    let exclude = sel.dataset.exclude === "true";
 
-document.addEventListener("click", e => {
-  if (e.target.classList.contains("removeBtn")) {
-    e.target.parentElement.remove();
-    saveSubjectsToLocalStorage();
-  }
-});
-
-// Load saved theme
-window.onload = () => {
-  const theme = localStorage.getItem("theme") || "dark";
-  document.body.className = theme;
-  toggle.checked = theme === "dark";
-
-  // Auto add saved subjects or new ones
-  const saved = JSON.parse(localStorage.getItem("subjects") || "[]");
-  if (saved.length > 0) {
-    saved.forEach(sub => addSubjectRow(sub));
-  } else {
-    for (let i = 0; i < 3; i++) addSubjectRow();
-  }
-};
-
-
-// Add Subject Button
-document.getElementById("addSubject").addEventListener("click", addSubjectRow);
-
-function addSubjectRow() {
-  const row = document.createElement("div");
-  row.className = "subjectRow";
-  row.innerHTML = `
-    <input type="text" placeholder="Subject" />
-    <input type="number" placeholder="Credits" min="1" required />
-    <select required>
-      <option value="">Grade</option>
-      <option value="10">O</option>
-      <option value="9">A+</option>
-      <option value="8">A</option>
-      <option value="7">B+</option>
-      <option value="6">B</option>
-      <option value="0">RA (Fail)</option>
-    </select>
-    <button type="button" class="removeBtn">❌</button>
-  `;
-  document.getElementById("subjectsContainer").appendChild(row);
-}
-
-// Remove subject
-document.addEventListener("click", e => {
-  if (e.target.classList.contains("removeBtn")) {
-    e.target.parentElement.remove();
-  }
-});
-
-// GPA Calculator
-document.getElementById("gpaForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  let totalCredits = 0, totalPoints = 0;
-  const rows = document.querySelectorAll(".subjectRow");
-
-  rows.forEach(row => {
-    const credit = parseFloat(row.children[1].value);
-    const grade = parseFloat(row.children[2].value);
-    if (!isNaN(credit) && !isNaN(grade)) {
-      totalCredits += credit;
-      totalPoints += credit * grade;
+    if (grade && !exclude) {
+      totalPoints += gradePoints[grade] * credits;
+      totalCredits += credits;
     }
   });
 
-  const gpa = (totalPoints / totalCredits).toFixed(2);
-  document.getElementById("gpaResult").textContent = `🎓 GPA: ${gpa}`;
+  let gpa = totalCredits ? (totalPoints / totalCredits).toFixed(2) : "0.00";
+  document.getElementById("gpaResult").textContent = "GPA: " + gpa;
 });
 
-// CGPA Calculator
-document.getElementById("cgpaForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  const totalGPA = parseFloat(document.getElementById("totalGPA").value);
-  const totalCredits = parseFloat(document.getElementById("totalCredits").value);
-  const cgpa = (totalGPA / totalCredits).toFixed(2);
-  document.getElementById("cgpaResult").textContent = `📘 CGPA: ${cgpa}`;
-});
-
-// CGPA to Percentile
-function convertToPercentile() {
-  const cgpa = parseFloat(document.getElementById("cgpaInput").value);
-  if (!isNaN(cgpa)) {
-    let percentile = (cgpa * 9.5).toFixed(2);
-    if (percentile > 100) percentile = 100;
-    document.getElementById("percentileResult").textContent = `🎯 Percentile: ${percentile}%`;
+// Calculate CGPA
+document.getElementById("calcCGPA").addEventListener("click", () => {
+  let totalGPA = parseFloat(document.getElementById("totalGPA").value);
+  let totalCredits = parseFloat(document.getElementById("totalCredits").value);
+  if (!isNaN(totalGPA) && !isNaN(totalCredits) && totalCredits > 0) {
+    let cgpa = (totalGPA / totalCredits).toFixed(2);
+    document.getElementById("cgpaResult").textContent = "CGPA: " + cgpa;
+  } else {
+    document.getElementById("cgpaResult").textContent = "Please enter valid numbers.";
   }
-}
+});

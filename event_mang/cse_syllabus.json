@@ -1,0 +1,101 @@
+{
+  "semesters": [
+    {
+      "Semester": 1,
+      "subjects": [
+        { "Code": "HS3151", "Name": "Professional English - I", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "MA3151", "Name": "Matrices and Calculus", "Credits": 4, "excludeFromCGPA": false },
+        { "Code": "PH3151", "Name": "Engineering Physics", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "CY3151", "Name": "Engineering Chemistry", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "GE3151", "Name": "Problem Solving and Python Programming", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "GE3152", "Name": "Heritage of Tamil", "Credits": 1, "excludeFromCGPA": true },
+        { "Code": "GE3171", "Name": "Problem Solving and Python Programming Laboratory", "Credits": 2, "excludeFromCGPA": false },
+        { "Code": "BS3171", "Name": "Physics and Chemistry Laboratory", "Credits": 2, "excludeFromCGPA": false },
+        { "Code": "GE3172", "Name": "English Laboratory", "Credits": 1, "excludeFromCGPA": false }
+      ]
+    },
+    {
+      "Semester": 2,
+      "subjects": [
+        { "Code": "HS3251", "Name": "Professional English - II", "Credits": 2, "excludeFromCGPA": false },
+        { "Code": "MA3251", "Name": "Statistics and Numerical Methods", "Credits": 4, "excludeFromCGPA": false },
+        { "Code": "PH3256", "Name": "Physics for Information Science", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "BE3251", "Name": "Basic Electrical and Electronics Engineering", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "GE3251", "Name": "Design Thinking", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "GE3252", "Name": "Tamils and Technology", "Credits": 1, "excludeFromCGPA": true },
+        { "Code": "CS3251", "Name": "Programming in C", "Credits": 3, "excludeFromCGPA": false },
+        { "Code": "CS3271", "Name": "C Programming Laboratory", "Credits": 2, "excludeFromCGPA": false },
+        { "Code": "GE3271", "Name": "Engineering Practices Laboratory", "Credits": 2, "excludeFromCGPA": false }
+      ]
+    },
+    {
+      "Semester": 3,
+      "subjects": [
+        { "Code": "MA3354", "Name": "Discrete Mathematics", "Credits": 4 },
+        { "Code": "CS3351", "Name": "Digital Principles & Computer Organization", "Credits": 4 },
+        { "Code": "CS3352", "Name": "Foundations of Data Science", "Credits": 3 },
+        { "Code": "CS3301", "Name": "Data Structures", "Credits": 3 },
+        { "Code": "CS3391", "Name": "Object Oriented Programming", "Credits": 3 },
+        { "Code": "CS3311", "Name": "Data Structures Lab", "Credits": 1.5 },
+        { "Code": "CS3381", "Name": "OOP Laboratory", "Credits": 1.5 },
+        { "Code": "CS3361", "Name": "Data Science Lab", "Credits": 2 },
+        { "Code": "GE3361", "Name": "Professional Development", "Credits": 1 }
+      ]
+    },
+  {
+    "Semester": 4,
+    "subjects": [
+        { "Code": "CS3452", "Name": "Theory of Computation", "Credits": 3 },
+        { "Code": "CS3491", "Name": "Artificial Intelligence & Machine Learning", "Credits": 4 },
+        { "Code": "CS3492", "Name": "Database Management Systems", "Credits": 3 },
+        { "Code": "CS3401", "Name": "Algorithms", "Credits": 4 },
+        { "Code": "CS3451", "Name": "Introduction to Operating Systems", "Credits": 3 },
+        { "Code": "GE3451", "Name": "Environmental Sciences & Sustainability", "Credits": 2 },
+        { "Code": "CS3461", "Name": "Operating Systems Laboratory", "Credits": 1.5 },
+        { "Code": "CS3481", "Name": "DBMS Laboratory", "Credits": 1.5 }
+  ]
+  },
+  {"Semester": 5,
+    "subjects": [
+        { "Code": "CS3591", "Name": "Computer Networks", "Credits": 4 },
+        { "Code": "CS3501", "Name": "Compiler Design", "Credits": 4 },
+        { "Code": "CB3491", "Name": "Cryptography & Cyber Security", "Credits": 3 },
+        { "Code": "CS3551", "Name": "Distributed Computing", "Credits": 3 },
+        { "Code": "PE-I", "Name": "Professional Elective I (choose)", "Credits": 3 },
+        { "Code": "PE-II", "Name": "Professional Elective II (choose)", "Credits": 3 },
+        { "Code": "MC-I", "Name": "Mandatory Course I (Non-credit)", "Credits": 0 }
+  ]
+  },
+  {
+    "Semester": 6,
+    "subjects": [
+        { "Code": "CCS356", "Name": "Object Oriented Software Engineering", "Credits": 4 },
+        { "Code": "CS3691", "Name": "Embedded Systems and IoT", "Credits": 4 },
+        { "Code": "OE-I", "Name": "Open Elective I (choose)", "Credits": 3 },
+        { "Code": "PE-III", "Name": "Professional Elective III (choose)", "Credits": 3 },
+        { "Code": "PE-IV", "Name": "Professional Elective IV (choose)", "Credits": 3 },
+        { "Code": "PE-V", "Name": "Professional Elective V (choose)", "Credits": 3 },
+        { "Code": "PE-VI", "Name": "Professional Elective VI (choose)", "Credits": 3 },
+        { "Code": "MC-II", "Name": "Mandatory Course II (Non-credit)", "Credits": 0 }
+  ]
+  },
+  {
+    "Semester": 7,
+    "subjects": [
+        { "Code": "GE3791", "Name": "Human Values & Ethics", "Credits": 2 },
+        { "Code": "EL-MGMT", "Name": "Elective - Management (choose)", "Credits": 3 },
+        { "Code": "OE-II", "Name": "Open Elective II (choose)", "Credits": 3 },
+        { "Code": "OE-III", "Name": "Open Elective III (choose)", "Credits": 3 },
+        { "Code": "OE-IV", "Name": "Open Elective IV (choose)", "Credits": 3 },
+        { "Code": "CS3711", "Name": "Summer Internship", "Credits": 2 }
+  ]
+  },
+  {
+    "Semester": 8,
+    "subjects": [
+        { "Code": "CS3811", "Name": "Project Work / Internship", "Credits": 10 }
+
+  ]
+  }
+]
+}
