@@ -2,6 +2,7 @@
 
 A simple and user-friendly web application to calculate **GPA** and **CGPA** for college students.
 
+
 ## Features
 - Calculate Semester GPA
 - Calculate Overall CGPA
