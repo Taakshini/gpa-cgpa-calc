@@ -2,8 +2,6 @@
 const gradePoints = {
   "O": 10, "A+": 9, "A": 8, "B+": 7, "B": 6, "C": 5, "U": 0
 };
-
-// Load JSON and populate semester dropdown
 fetch("cse_syllabus.json")
   .then(res => res.json())
   .then(data => {
